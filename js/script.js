@@ -38,6 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const typingIndicator = document.getElementById('typing-indicator');
 
+    // Hero Video Sound Elements
+    const heroVideo = document.getElementById('hero-video');
+    const heroSoundBtn = document.getElementById('hero-sound-btn');
+    const heroSoundIcon = document.getElementById('hero-sound-icon');
+
     // Safe Storage Wrappers (prevent incognito/iframe sandboxing crashes)
     const storage = {
         getItem: (key) => {
@@ -324,6 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startChatBtn) {
         startChatBtn.addEventListener('click', () => {
             console.log("Start Chat button clicked.");
+            
+            // Clean up landing interaction listeners
+            document.removeEventListener('click', unmuteOnInteraction);
+            document.removeEventListener('keydown', unmuteOnInteraction);
+            
+            // Pause video immediately to prevent audio bleed during fade transition
+            if (heroVideo) {
+                heroVideo.pause();
+            }
+
             try {
                 try {
                     initAudio();
@@ -675,4 +690,80 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
     }
+
+    // ==========================================================================
+    // Hero Video Sound Logic
+    // ==========================================================================
+    function updateHeroSoundIcon(isMuted) {
+        if (!heroSoundIcon) return;
+        if (isMuted) {
+            heroSoundIcon.innerHTML = `
+                <path d="M11 5L6 9H2V15H6L11 19V5Z" />
+                <path d="M23 9L17 15M17 9L23 15" />
+            `;
+            if (heroSoundBtn) {
+                heroSoundBtn.setAttribute('aria-label', 'Unmute Background Video');
+                heroSoundBtn.title = 'Unmute Video';
+            }
+        } else {
+            heroSoundIcon.innerHTML = `
+                <path d="M11 5L6 9H2V15H6L11 19V5Z" />
+                <path d="M15.54 8.46c.94.94 1.46 2.2 1.46 3.54s-.52 2.6-1.46 3.54M19.07 4.93c1.88 1.88 2.93 4.42 2.93 7.07s-1.05 5.19-2.93 7.07" />
+            `;
+            if (heroSoundBtn) {
+                heroSoundBtn.setAttribute('aria-label', 'Mute Background Video');
+                heroSoundBtn.title = 'Mute Video';
+            }
+        }
+    }
+
+    if (heroSoundBtn && heroVideo) {
+        heroSoundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            // Toggle mute state
+            heroVideo.muted = !heroVideo.muted;
+            updateHeroSoundIcon(heroVideo.muted);
+            
+            // In case it was paused, play it
+            if (heroVideo.paused) {
+                heroVideo.play().catch(err => console.warn("Failed to play video:", err));
+            }
+        });
+    }
+
+    // Try to autoplay with sound on load, fallback to muted if blocked
+    if (heroVideo) {
+        // Set initially to unmuted to try unmuted autoplay
+        heroVideo.muted = false;
+        
+        const playPromise = heroVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log("Hero video autoplayed with sound.");
+                updateHeroSoundIcon(false);
+            }).catch(error => {
+                console.warn("Hero video autoplay with sound was blocked. Falling back to muted autoplay.");
+                heroVideo.muted = true;
+                heroVideo.play().catch(err => console.error("Muted autoplay also failed:", err));
+                updateHeroSoundIcon(true);
+            });
+        } else {
+            updateHeroSoundIcon(heroVideo.muted);
+        }
+    }
+
+    // Unmute on first user interaction anywhere if currently muted
+    function unmuteOnInteraction() {
+        if (heroVideo && heroVideo.muted) {
+            heroVideo.muted = false;
+            updateHeroSoundIcon(false);
+            heroVideo.play().catch(err => console.warn(err));
+        }
+        document.removeEventListener('click', unmuteOnInteraction);
+        document.removeEventListener('keydown', unmuteOnInteraction);
+    }
+    
+    document.addEventListener('click', unmuteOnInteraction);
+    document.addEventListener('keydown', unmuteOnInteraction);
 });

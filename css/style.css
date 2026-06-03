@@ -988,3 +988,45 @@ body {
     max-width: 500px;
 }
 
+/* Floating Sound Control Button for Hero Video */
+.hero-sound-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #ffffff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition-bounce);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.hero-sound-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+}
+
+.hero-sound-btn:active {
+    transform: scale(0.95);
+}
+
+.hero-sound-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.hero-sound-btn:hover svg {
+    transform: scale(1.05);
+}
+
+
