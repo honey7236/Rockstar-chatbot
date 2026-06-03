@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RockStar AI Chatbot - The Ultimate Student Companion</title>
+    <meta name="description" content="Meet RockStar, the ultimate AI friend and study partner built specifically for students. Get project ideas, study tips, assignment advice, and more.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Landing / Hero Section -->
+    <section id="hero-section" class="hero-section">
+        <!-- Background Video -->
+        <video autoplay loop muted playsinline id="hero-video" class="hero-video">
+            <source src="assets/hero_section_video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <!-- Overlay for contrast -->
+        <!-- <div class="hero-overlay"></div> -->
+
+        <button id="start-chat-btn" class="btn start-chat-btn" aria-label="Start chatting with RockStar">
+            Start Chat
+            <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </section>
+
+    <!-- Chat Interface Section -->
+    <section id="chat-section" class="chat-section hidden">
+        <div class="chat-wrapper">
+            <!-- Sidebar for features, shortcuts, and history -->
+            <aside class="chat-sidebar">
+            </aside> <!-- Sidebar kept but can be hidden in CSS if desired, we hide it to match reference image exactly -->
+
+            <!-- Main Chat Area -->
+            <main class="chat-area">
+                <!-- Chat Header -->
+                <header class="chat-header">
+                    <div class="bot-profile">
+                        <div class="avatar-container">
+                            <svg class="robot-avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="48" fill="#FFF8E7" stroke="#E6D3B3" stroke-width="2"/>
+                                <rect x="18" y="42" width="10" height="16" rx="3" fill="#E2AB18"/>
+                                <rect x="72" y="42" width="10" height="16" rx="3" fill="#E2AB18"/>
+                                <rect x="47" y="16" width="6" height="12" fill="#E2AB18"/>
+                                <circle cx="50" cy="14" r="6" fill="#F4C524"/>
+                                <rect x="25" y="26" width="50" height="48" rx="15" fill="#F4C524" stroke="#D89E10" stroke-width="3"/>
+                                <rect x="32" y="34" width="36" height="28" rx="8" fill="#202225"/>
+                                <circle cx="43" cy="45" r="4.5" fill="#FFEAA7"/>
+                                <circle cx="57" cy="45" r="4.5" fill="#FFEAA7"/>
+                                <path d="M46 54C47.5 56 52.5 56 54 54" stroke="#FFEAA7" stroke-width="2.5" stroke-linecap="round"/>
+                                <rect x="42" y="74" width="16" height="8" fill="#C08D0B"/>
+                            </svg>
+                        </div>
+                        <div class="bot-info">
+                            <div class="brand-text">ROCKSTAR</div>
+                            <div class="brand-subtext">CHATBOT</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-actions">
+                        <!-- Persona Button -->
+                        <button id="persona-btn" class="header-action-btn" title="Set Chatbot Persona" aria-label="Set Chatbot Persona" style="margin-right: 8px;">
+                            <svg class="action-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="currentColor"/>
+                            </svg>
+                        </button>
+
+                        <!-- Menu dots -->
+                        <button id="menu-dots-btn" class="header-action-btn" title="Options" aria-label="Options">
+                            <svg class="action-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="5" cy="12" r="2" fill="currentColor"/>
+                                <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                                <circle cx="19" cy="12" r="2" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Dropdown Menu (Hidden by default) -->
+                        <div id="options-dropdown" class="options-dropdown hidden">
+                            <button id="sound-toggle-btn" class="dropdown-item">
+                                <span class="dropdown-item-icon">🔊</span> Toggle Sound
+                            </button>
+                            <button id="api-key-btn" class="dropdown-item">
+                                <span class="dropdown-item-icon">🔑</span> API Settings
+                            </button>
+                            <button id="clear-chat-btn" class="dropdown-item danger">
+                                <span class="dropdown-item-icon">🗑️</span> Clear Chat
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Messages Container -->
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Dynamic chat messages go here -->
+                </div>
+
+                <!-- Typing Indicator Inside Messages Area but Absolute/Floating bottom -->
+                <div id="typing-indicator" class="typing-indicator hidden">
+                    <div class="typing-avatar">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" fill="#FFF8E7" stroke="#E6D3B3" stroke-width="2"/>
+                            <rect x="18" y="42" width="10" height="16" rx="3" fill="#E2AB18"/>
+                            <rect x="72" y="42" width="10" height="16" rx="3" fill="#E2AB18"/>
+                            <rect x="47" y="16" width="6" height="12" fill="#E2AB18"/>
+                            <circle cx="50" cy="14" r="6" fill="#F4C524"/>
+                            <rect x="25" y="26" width="50" height="48" rx="15" fill="#F4C524" stroke="#D89E10" stroke-width="3"/>
+                            <rect x="32" y="34" width="36" height="28" rx="8" fill="#202225"/>
+                            <circle cx="43" cy="45" r="4.5" fill="#FFEAA7"/>
+                            <circle cx="57" cy="45" r="4.5" fill="#FFEAA7"/>
+                            <path d="M46 54C47.5 56 52.5 56 54 54" stroke="#FFEAA7" stroke-width="2.5" stroke-linecap="round"/>
+                            <rect x="42" y="74" width="16" height="8" fill="#C08D0B"/>
+                        </svg>
+                    </div>
+                    <div class="typing-bubble">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+
+                <!-- Chat Input Footer -->
+                <footer class="chat-input-wrapper">
+                    <!-- Attachment clip -->
+                    <button class="attachment-btn" title="Attach file" aria-label="Attach file">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    
+                    <form id="chat-form" class="chat-input-form" onsubmit="event.preventDefault();">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." aria-label="Type message to RockStar" autocomplete="off">
+                        
+                        <button type="submit" id="send-btn" class="send-btn" disabled aria-label="Send message">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </form>
+                </footer>
+            </main>
+        </div>
+    </section>
+
+    <!-- API Settings Modal -->
+    <div id="api-key-modal" class="api-modal-overlay hidden">
+        <div class="api-modal-card">
+            <h3 class="modal-title">Groq API Key Settings</h3>
+            <p class="modal-description">Please enter your Groq API Key to enable Llama 3.3 replies. The key is saved locally in your browser cache.</p>
+            <div class="key-input-container">
+                <input type="password" id="api-key-input" class="api-key-input" placeholder="gsk_...">
+                <div class="api-link-note">Don't have a key? Get one from <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq Console</a></div>
+            </div>
+            <div class="modal-actions">
+                <button id="close-api-modal-btn" class="modal-btn cancel-btn">Cancel</button>
+                <button id="save-api-key-btn" class="modal-btn save-btn">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Persona Settings Modal -->
+    <div id="persona-modal" class="api-modal-overlay hidden">
+        <div class="api-modal-card persona-modal-card">
+            <h3 class="modal-title">Chatbot Persona Settings</h3>
+            <p class="modal-description">Choose how you want RockStar to talk to you. You can change this at any time.</p>
+            
+            <div class="persona-grid">
+                <div class="persona-card active" data-persona="friend">
+                    <span class="persona-icon">🎸</span>
+                    <div class="persona-details">
+                        <div class="persona-name">Friend</div>
+                        <div class="persona-desc">Energetic study buddy</div>
+                    </div>
+                </div>
+                <div class="persona-card" data-persona="teacher">
+                    <span class="persona-icon">📚</span>
+                    <div class="persona-details">
+                        <div class="persona-name">Teacher</div>
+                        <div class="persona-desc">Wise & structured mentor</div>
+                    </div>
+                </div>
+                <div class="persona-card" data-persona="brother">
+                    <span class="persona-icon">👦</span>
+                    <div class="persona-details">
+                        <div class="persona-name">Brother</div>
+                        <div class="persona-desc">Casual & supportive sibling</div>
+                    </div>
+                </div>
+                <div class="persona-card" data-persona="custom">
+                    <span class="persona-icon">🎭</span>
+                    <div class="persona-details">
+                        <div class="persona-name">Custom</div>
+                        <div class="persona-desc">Define your own behavior</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="custom-persona-container" class="custom-persona-container hidden">
+                <label for="custom-persona-input" class="custom-persona-label">Custom Characteristics:</label>
+                <textarea id="custom-persona-input" class="custom-persona-input" placeholder="e.g. A sarcastic pirate who loves coding, or an encouraging athletic coach..."></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button id="close-persona-modal-btn" class="modal-btn cancel-btn">Cancel</button>
+                <button id="save-persona-btn" class="modal-btn save-btn">Apply Persona</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Puter.js for free keyless backend AI operations -->
+    <script src="https://js.puter.com/v2/"></script>
+    <!-- Custom Web Audio Synthesizer (No external library dependency) -->
+    <script src="js/script.js"></script>
+</body>
+</html>
